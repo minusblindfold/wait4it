@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WAIT4.IT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>WAIT4.IT</h1>
+  </header>
+
+  <main>
+    <!-- Landing state -->
+    <div id="landing">
+      <div id="draft-banner" style="display:none;">
+        <p id="draft-info"></p>
+        <div class="btn-row">
+          <button class="resume-btn" id="draft-resume-btn">Resume</button>
+          <button class="discard-btn" id="draft-discard-btn">Dismiss</button>
+        </div>
+      </div>
+      <p class="tagline">Add commentary to any YouTube video and share it with friends.</p>
+      <div class="url-form">
+        <input type="text" id="url-input" placeholder="Paste a YouTube link..." autocomplete="off">
+        <button id="watch-btn" type="button">Watch</button>
+      </div>
+      <div id="url-error"></div>
+      <div class="how-it-works">
+        <div class="step">
+          <div class="step-num">1</div>
+          <p>Paste a YouTube link</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p>Add Comment at any moment</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p>Share the link</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Creator state -->
+    <div id="creator">
+      <div class="creator-left">
+        <div class="player-wrap">
+          <div id="player-container"></div>
+        </div>
+      </div>
+      <div class="creator-right">
+        <div class="creator-controls">
+          <button id="pop-btn" disabled>Add Comment</button>
+          <span id="comment-timestamp"></span>
+          <div id="comment-input-wrap">
+            <form id="comment-form">
+              <input type="text" id="comment-text" placeholder="What's happening here?" autocomplete="off">
+              <button type="submit">Add</button>
+            </form>
+          </div>
+          <button id="resume-btn" style="display:none;">Resume Playing</button>
+        </div>
+        <ul id="comment-list"></ul>
+        <div style="flex:1;"></div>
+        <div class="generate-section">
+          <button id="generate-btn" disabled>Generate Link</button>
+          <span id="size-indicator"></span>
+          <span id="copy-toast">Link copied!</span>
+        </div>
+        <div id="generated-url">
+          <input type="text" readonly id="generated-url-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- Viewer state -->
+    <div id="viewer">
+      <div class="player-wrap">
+        <div id="viewer-player-container"></div>
+        <div class="bubble-stack" id="bubble-stack"></div>
+      </div>
+      <p class="create-own"><a href="." id="create-own-link">Create your own</a></p>
+    </div>
+
+    <!-- Error state -->
+    <div id="error-state">
+      <h2>Oops!</h2>
+      <p id="error-message">This link appears to be broken or expired.</p>
+      <p><a href=".">Start fresh</a></p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/minusblindfold" target="_blank" rel="noopener">GitHub</a>
+    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="minusblindfold" data-color="#FFDD00" data-emoji="" data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff"></script>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+</body>
+</html>

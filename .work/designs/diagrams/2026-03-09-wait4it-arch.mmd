@@ -1,0 +1,19 @@
+graph TD
+    subgraph Browser
+        Landing["Landing Page<br/>URL input"]
+        Landing -->|valid YouTube URL| Creator["Creator Mode<br/>Player + Pop! button + comment list"]
+        Creator -->|Generate Link| Encoder["Hash Encoder<br/>JSON → LZ-String → URL hash"]
+        Encoder -->|shareable URL| Clipboard["Clipboard + display"]
+        HashDetect["Hash Detected on Load"] -->|decode| Decoder["Hash Decoder<br/>URL hash → LZ-String → JSON"]
+        Decoder --> Viewer["Viewer Mode<br/>Player + bubble engine"]
+    end
+
+    subgraph External
+        YTAPI["YouTube IFrame API<br/>youtube.com/iframe_api"]
+        LZCDN["LZ-String<br/>cdnjs"]
+    end
+
+    Creator --> YTAPI
+    Viewer --> YTAPI
+    Encoder --> LZCDN
+    Decoder --> LZCDN

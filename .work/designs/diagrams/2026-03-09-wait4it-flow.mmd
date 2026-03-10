@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant U as Creator
+    participant P as YouTube Player
+    participant S as State (in-memory)
+    participant LS as localStorage
+    participant E as Encoder
+
+    U->>P: Paste YouTube URL
+    P->>P: Load video via IFrame API
+    loop Watch and comment
+        U->>P: Click "Pop!" button
+        P->>P: Auto-pause
+        P->>S: getCurrentTime() → timestamp
+        U->>S: Type comment text
+        S->>LS: Auto-save draft
+    end
+    U->>E: Click "Generate Link"
+    E->>E: JSON → LZ-String compress → base64
+    E->>U: Copy URL to clipboard
+
+    participant V as Viewer
+    participant D as Decoder
+    participant B as Bubble Engine
+
+    V->>D: Open shared URL
+    D->>D: Read hash → decompress → parse JSON
+    D->>P: Load video
+    loop Playback
+        B->>P: Poll getCurrentTime() every 250ms
+        B->>V: Show bubble when timestamp reached
+        B->>B: Auto-dismiss after delay
+    end
