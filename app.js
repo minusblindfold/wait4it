@@ -9,6 +9,51 @@ let pollInterval = null;
 let shownSet = new Set();
 let lastTime = 0;
 const STORAGE_KEY = 'wait4it-draft';
+const SOUND_MUTE_KEY = 'wait4it-muted';
+
+// ── Audio (bloop sound) ──
+let audioCtx = null;
+let soundMuted = false;
+
+const BUBBLE_COLORS = [
+  { bg: '#FFF2CC', border: '#D4A800' },
+  { bg: '#D6EEFF', border: '#7AB8E0' },
+  { bg: '#FFE0E6', border: '#E8A0B0' },
+  { bg: '#E0FFE6', border: '#80C090' },
+];
+let bubbleColorIndex = 0;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playBloop() {
+  if (soundMuted || !audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(560, now + 0.07);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.14);
+  } catch (e) {}
+}
+
+function getDisplayDuration(text) {
+  const charCount = text.length;
+  return Math.max(4, Math.min(8, 2 + charCount / 30)) * 1000;
+}
 
 // ── DOM refs ──
 const $landing = document.getElementById('landing');
@@ -130,6 +175,7 @@ function onPlayerStateChange(event) {
   // Bubble engine control
   if (currentMode === 'viewer') {
     if (playerState === 1) {
+      initAudio();
       startBubbleEngine();
     } else {
       stopBubbleEngine();
@@ -224,7 +270,7 @@ $commentList.addEventListener('click', function(e) {
     const li = btn.closest('li');
     const textSpan = li.querySelector('.text');
     const current = comments[index].s;
-    textSpan.innerHTML = `<input type="text" class="edit-input" value="${escapeHtml(current)}" style="width:100%;padding:4px 8px;border:1px solid #555;background:#222;color:#e0e0e0;border-radius:4px;font-size:0.9rem;">`;
+    textSpan.innerHTML = `<input type="text" class="edit-input" value="${escapeHtml(current)}" style="width:100%;padding:4px 8px;border:2px solid #E5DDD3;background:#fff;color:#2A2A2A;border-radius:6px;font-size:0.9rem;outline:none;">`;
     const input = textSpan.querySelector('input');
     input.focus();
     input.select();
@@ -421,16 +467,35 @@ function showBubble(comment) {
   const el = document.createElement('div');
   el.className = 'bubble';
   el.textContent = comment.s;
-  el.addEventListener('click', function() {
+
+  // Color rotation
+  const color = BUBBLE_COLORS[bubbleColorIndex++ % BUBBLE_COLORS.length];
+  el.style.setProperty('--bubble-bg', color.bg);
+  el.style.setProperty('--bubble-border', color.border);
+
+  // Auto-dismiss
+  const duration = getDisplayDuration(comment.s);
+  let dismissTimer = setTimeout(() => {
     el.classList.remove('show');
     el.classList.add('dismiss');
-    setTimeout(() => el.remove(), 200);
+    setTimeout(() => el.remove(), 250);
+  }, duration);
+
+  // Click-to-dismiss
+  el.addEventListener('click', function() {
+    clearTimeout(dismissTimer);
+    el.classList.remove('show');
+    el.classList.add('dismiss');
+    setTimeout(() => el.remove(), 250);
   });
+
   $bubbleStack.appendChild(el);
-  // Trigger pop-in on next frame
+
+  // Trigger pop-in + bloop on next frame
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       el.classList.add('show');
+      playBloop();
     });
   });
 }
@@ -458,6 +523,28 @@ $urlInput.addEventListener('input', function() {
 $urlInput.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') $watchBtn.click();
 });
+
+// ── Mute toggle ──
+const $muteToggle = document.getElementById('mute-toggle');
+const $muteIconText = document.getElementById('mute-icon-text');
+
+function updateMuteIcon() {
+  if ($muteIconText) $muteIconText.textContent = soundMuted ? '\u{1F507}' : '\u{1F50A}';
+}
+
+// Load saved preference
+try {
+  soundMuted = localStorage.getItem(SOUND_MUTE_KEY) === '1';
+} catch(e) {}
+updateMuteIcon();
+
+if ($muteToggle) {
+  $muteToggle.addEventListener('click', function() {
+    soundMuted = !soundMuted;
+    try { localStorage.setItem(SOUND_MUTE_KEY, soundMuted ? '1' : '0'); } catch(e) {}
+    updateMuteIcon();
+  });
+}
 
 // ── Init ──
 (function init() {
