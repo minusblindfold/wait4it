@@ -3,7 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WAIT4.IT</title>
+  <title>WAIT4.IT — Pop-Up Commentary for YouTube Videos</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Add timestamped pop-up commentary to any YouTube video and share it with friends. No sign-up required. Inspired by VH1's Pop-Up Video.">
+  <meta name="author" content="wait4.it">
+  <link rel="canonical" href="https://wait4.it/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wait4.it/">
+  <meta property="og:title" content="WAIT4.IT — Pop-Up Commentary for YouTube Videos">
+  <meta property="og:description" content="Add timestamped pop-up commentary to any YouTube video and share it with friends. No sign-up required.">
+  <meta property="og:image" content="https://wait4.it/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="628">
+  <meta property="og:image:alt" content="WAIT4.IT — Pop-up commentary bubbles on a YouTube video">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WAIT4.IT — Pop-Up Commentary for YouTube Videos">
+  <meta name="twitter:description" content="Add timestamped pop-up commentary to any YouTube video and share it with friends. No sign-up required.">
+  <meta name="twitter:image" content="https://wait4.it/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#2D2A26">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C49ZCLS684"></script>
@@ -17,6 +51,7 @@
 <body>
   <header>
     <h1>WAIT4.IT</h1>
+    <p class="header-tagline">pop-up commentary for youtube</p>
   </header>
 
   <main>
@@ -29,7 +64,7 @@
           <button class="discard-btn" id="draft-discard-btn">Dismiss</button>
         </div>
       </div>
-      <p class="tagline">Add commentary to any YouTube video and share it with friends.</p>
+      <p class="tagline">Add your voice to any YouTube video</p>
       <div class="url-form">
         <input type="text" id="url-input" placeholder="Paste a YouTube link..." autocomplete="off">
         <button id="watch-btn" type="button">Watch</button>
@@ -87,6 +122,9 @@
     <div id="viewer">
       <div class="player-wrap">
         <div id="viewer-player-container"></div>
+        <button id="mute-toggle" class="mute-btn" title="Toggle sound">
+          <span class="mute-icon" id="mute-icon-text"></span>
+        </button>
         <div class="bubble-stack" id="bubble-stack"></div>
       </div>
       <p class="create-own"><a href="." id="create-own-link">Create your own</a></p>
