@@ -32,8 +32,16 @@ function initAudio() {
   }
 }
 
+// AudioContext requires a user gesture in the parent page (iframe clicks don't count).
+// Initialize on the first click/touch anywhere on the page.
+document.addEventListener('click', function initOnGesture() {
+  initAudio();
+  document.removeEventListener('click', initOnGesture);
+}, { once: true });
+
 function playBloop() {
   if (soundMuted || !audioCtx) return;
+  if (audioCtx.state === 'suspended') { audioCtx.resume(); }
   try {
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
